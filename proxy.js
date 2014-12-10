@@ -1,7 +1,10 @@
-var proxy = require('./lib/proxy-server');
+var proxy = require('./lib/proxy-server'),
+    token = require('./lib/token-server');
 
-var server = new proxy.ProxyServer();
+proxy.ProxyServer().listen(5005, function(){
+  console.log('Proxy server listening on port', this.address().port);
+});
 
-server.listen(5005, function(){
-  console.log('Proxy listening on port 5005');
+token.TokenServer().listen(5006, function(){
+  console.log('Token server listening on port', this.address().port);
 });
