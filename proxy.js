@@ -1,9 +1,10 @@
-var net = require('net'),     // TODO: tls
+var net = require('net'),
+    tls = require('tls'),
     streamplex = require('streamplex');
 
 var PORT = +process.env.PORT || 5005;
 
-net.createServer(function (tunnelSocket) {
+net.createServer(function (tunnelSocket) {           // TODO: tls server
   console.log("client opened tunnel socket");
   
   var tunnel = streamplex(streamplex.A_SIDE),
@@ -22,16 +23,18 @@ net.createServer(function (tunnelSocket) {
     }
     console.log("client created a stream");
     
-    var SocketClass = (type === 'tls') ? tls.TLSSocket : net.Socket,
-        socket = new SocketClass();
+    var socket = new net.Socket();
     stream.on('_pls_connect', function (port, host) {
       console.log("connection request:", host, port);
       // TODO: how to prevent unwanted (i.e. LAN/loopback) outbound?
       socket.connect(port, host, function () {
         console.log("connection success");
-        if (type === 'tls') stream.remoteEmit('secureConnect');
-        else stream.remoteEmit('connect');
-        stream.pipe(socket).pipe(stream);
+        stream.remoteEmit('connect');
+        if (type === 'tls') tls.connect({socket:socket, host:host, port:port}, function () {
+            var secureSocket = this;
+            stream.remoteEmit('secureConnect');
+            stream.pipe(secureSocket).pipe(stream);
+        }); else stream.pipe(socket).pipe(stream);
       }).on('error', function (e) {
         stream.emit('error', e);
         stream.destroy();
