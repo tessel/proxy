@@ -1,6 +1,8 @@
 var net = require('net'),     // TODO: tls
     streamplex = require('streamplex');
 
+var PORT = +process.env.PORT || 5005;
+
 net.createServer(function (tunnelSocket) {
   console.log("client opened tunnel socket");
   
@@ -42,6 +44,6 @@ net.createServer(function (tunnelSocket) {
       stream.remoteEmit('timeout');
     });
   });
-}).listen(5005, function(){
+}).listen(PORT, function(){
   console.log('Proxy server listening on port', this.address().port);
 });
