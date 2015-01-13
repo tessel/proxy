@@ -1,10 +1,16 @@
-var net = require('net'),
+var fs = require('fs'),
+    net = require('net'),
     tls = require('tls'),
     streamplex = require('streamplex');
 
-var PORT = +process.env.PORT || 5005;
+var PORT = +process.env.PORT || 5005,
+    KEY_FILE = process.env.KEY_FILE || "private-key.pem",
+    CERT_FILE = process.env.CERT_FILE || "public-cert.pem";
 
-net.createServer(function (tunnelSocket) {           // TODO: tls server
+tls.createServer({
+  key: fs.readFileSync(KEY_FILE),
+  cert: fs.readFileSync(CERT_FILE)
+}, function (tunnelSocket) {           // TODO: tls server
   console.log("client opened tunnel socket");
   
   var tunnel = streamplex(streamplex.A_SIDE),
