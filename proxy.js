@@ -16,6 +16,12 @@ tls.createServer({
   var tunnel = streamplex(streamplex.A_SIDE),
       authed = false;
   tunnelSocket.pipe(tunnel).pipe(tunnelSocket);
+  tunnelSocket.on('error', function (e) {
+    tunnel.destroy(e);
+  });
+  tunnelSocket.on('close', function () {
+    console.log("tunnel socket closed");
+  });
   tunnel.on('message', function (d) {
     if (d.token === 'DEV-CRED') authed = true;
     tunnel.sendMessage({authed:authed});
@@ -31,7 +37,7 @@ tls.createServer({
     
     var socket = new net.Socket();
     stream.on('_pls_connect', function (port, host) {
-      console.log("connection request:", host, port);
+      console.log("connection request:", host, port, type);
       // TODO: how to prevent unwanted (i.e. LAN/loopback) outbound?
       socket.connect(port, host, function () {
         console.log("connection success");
