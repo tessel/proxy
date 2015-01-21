@@ -3,7 +3,8 @@ var fs = require('fs'),
     tls = require('tls'),
     streamplex = require('streamplex');
 
-var PORT = +process.env.PORT || 5005,
+var auth = require("./proxy-auth.js"),
+    PORT = +process.env.PORT || 5005,
     KEY_FILE = process.env.KEY_FILE || "private-key.pem",
     CERT_FILE = process.env.CERT_FILE || "public-cert.pem";
 
@@ -26,10 +27,13 @@ net.createServer(function (tunnelSocket) {
     console.log(logId, "tunnel closed");
   });
   tunnel.on('message', function (d) {
-    if (d.token === 'DEV-CRED') authed = true;
-    tunnel.sendMessage({authed:authed});
-    if (authed) console.log(logId, "authenticated");
-    else console.warn(logId, "auth failed!");
+    auth(d.token, function (e, userId) {
+      if (e) console.error(logId, "auth system error", e.stack);
+      else if (userId) authed = true;
+      tunnel.sendMessage({authed:authed});
+      if (authed) console.log(logId, "authenticated as:", userId);
+      else if (!e) console.warn(logId, "auth failed!");
+    });
   });
   tunnel.on('stream', function (stream, type) {
     if (!authed) {
