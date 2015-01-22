@@ -9,12 +9,12 @@ var auth = require("./proxy-auth.js"),
     KEY_FILE = process.env.KEY_FILE || "config/private-key.pem",
     KEY_PASS = process.env.KEY_PASS;
 
-//tls.createServer({
-//  key: fs.readFileSync(KEY_FILE),
-//  passphrase: KEY_PASS,
-//  cert: fs.readFileSync(CERT_FILE)
-//}, function (tunnelSocket) {
-net.createServer(function (tunnelSocket) {
+tls.createServer({
+  key: fs.readFileSync(KEY_FILE),
+  passphrase: KEY_PASS,
+  cert: fs.readFileSync(CERT_FILE)
+}, function (tunnelSocket) {
+//net.createServer(function (tunnelSocket) {
   var logId = 'tunnel:'+Math.random().toFixed(20).slice(2);   // just a greppable string
   console.log(logId, "incoming tunnel from", tunnelSocket.remoteAddress);
   
