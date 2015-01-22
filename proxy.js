@@ -22,11 +22,15 @@ net.createServer(function (tunnelSocket) {
       authed = false;
   tunnelSocket.pipe(tunnel).pipe(tunnelSocket);
   tunnelSocket.on('error', function (e) {
-    console.warn(logId, "tunnel error", e.stack);
+    console.warn(logId, "tunnel network error", e.stack);
     tunnel.destroy(e);
   });
   tunnelSocket.on('close', function () {
     console.log(logId, "tunnel closed");
+  });
+  tunnel.on('error', function (e) {
+    console.warn(logId, "tunnel parsing error", e.stack);
+    tunnel.destroy(e);
   });
   tunnel.on('message', function (d) {
     auth(d.token, function (e, userId) {
