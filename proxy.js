@@ -5,11 +5,13 @@ var fs = require('fs'),
 
 var auth = require("./proxy-auth.js"),
     PORT = +process.env.PORT || 5005,
-    KEY_FILE = process.env.KEY_FILE || "private-key.pem",
-    CERT_FILE = process.env.CERT_FILE || "public-cert.pem";
+    CERT_FILE = process.env.CERT_FILE || "config/public-cert.pem",
+    KEY_FILE = process.env.KEY_FILE || "config/private-key.pem",
+    KEY_PASS = process.env.KEY_PASS;
 
 //tls.createServer({
 //  key: fs.readFileSync(KEY_FILE),
+//  passphrase: KEY_PASS,
 //  cert: fs.readFileSync(CERT_FILE)
 //}, function (tunnelSocket) {
 net.createServer(function (tunnelSocket) {
