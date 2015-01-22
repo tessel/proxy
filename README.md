@@ -4,7 +4,7 @@ Tunnel all your Tessel's outgoing `net`/`tls` connections over a single socket t
 
 ## Why you should host your own proxy server
 
-TLS connections made from a client to a target node do not get true end-to-end security!
+TLS connections made from a client to a target node, via this proxy, do not get true end-to-end security!
 
 A secure connection is always used between the device to the proxy server. And if you create a `tls` connection on the device, a secure connection will be used between the proxy server and the target node. **But** the proxy server itself has access to the "plain text" communications between the target and the server.
 
