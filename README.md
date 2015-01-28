@@ -57,9 +57,15 @@ You can purchase a suitable publicly-trusted certificate from your friendly loca
 Via <https://docs.nodejitsu.com/articles/cryptography/how-to-use-the-tls-module>:
 
     openssl genrsa -out config/private-key.pem 1024
+    
+    # option 1, simple CNAME
     openssl req -new -key config/private-key.pem -out config/csr.pem
-    #openssl req -new -key config/private-key.pem -config config/sample.cnf -out config/csr.pem
     openssl x509 -req -in config/csr.pem -signkey config/private-key.pem -out config/public-cert.pem   # self-sign
+    
+    # option 2, additional altnames
+    openssl req -new -key config/private-key.pem -config config/sample.cnf -out config/csr.pem
+    openssl x509 -req -extensions v3_req -extfile config/sample.cnf -in config/csr.pem -signkey config/private-key.pem -out config/public-cert.pem
+    
     rm config/csr.pem     # clean up intermediate file
 
 
