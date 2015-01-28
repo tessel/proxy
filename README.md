@@ -62,7 +62,7 @@ Via <https://docs.nodejitsu.com/articles/cryptography/how-to-use-the-tls-module>
     openssl req -new -key config/private-key.pem -out config/csr.pem
     openssl x509 -req -in config/csr.pem -signkey config/private-key.pem -out config/public-cert.pem   # self-sign
     
-    # option 2, additional altnames
+    # option 2, additional altnames (modify config/sample.cnf as needed)
     openssl req -new -key config/private-key.pem -config config/sample.cnf -out config/csr.pem
     openssl x509 -req -extensions v3_req -extfile config/sample.cnf -in config/csr.pem -signkey config/private-key.pem -out config/public-cert.pem
     
