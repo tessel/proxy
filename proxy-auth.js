@@ -1,7 +1,7 @@
 // this file needs to export a single function `validate(token, cb)`
 
 var AUTH_TESSEL_OA2 = process.env.AUTH_TESSEL_OA2,      // base URL, but must include client credentials!
-    AUTH_HARDCODED = process.env.AUTH_HARDCODED || 'DEV-CRED';
+    AUTH_HARDCODED = process.env.AUTH_HARDCODED;
 
 if (AUTH_TESSEL_OA2) {
   var url = require('url'),
@@ -29,3 +29,4 @@ else if (AUTH_HARDCODED) module.exports = function (token, cb) {
   if (token === AUTH_HARDCODED) cb(null, "[hardcoded account]");
   else cb(null, null);
 };
+else throw Error("You have not configured an AUTH_* setting, please see README for instructions.");

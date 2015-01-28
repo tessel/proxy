@@ -16,7 +16,7 @@ If you are more more comfortable with a self-hosted solution, or if you simply w
 
 ## Deploying your own proxy server
 
-Clone this repository, and then run `npm install` to fetch its dependencies. You will also need to provide a so-called "SSL certificate", which you can generate via the instructions below. Now from within this folder you will be able to launch the daemon, with any configuration desired, via something like `AUTH_HARDCODED=mypassword npm start` (runs under `supervisor` for automatic restart) or `node proxy` (directly).
+Clone this repository, and then run `npm install` to fetch its dependencies. You will also need to provide a so-called "SSL certificate", which you can generate via the instructions below. Now from within this folder you will be able to launch the daemon, with any configuration desired, via something like `npm start` (runs under `supervisor` for automatic restart, using environment variables from "./config/env") or `PORT=443 AUTH_HARDCODED=mypassword node proxy` (directly).
 
 You can override a number of settings via environment variables, but first…
 

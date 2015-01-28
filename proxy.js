@@ -4,7 +4,7 @@ var fs = require('fs'),
     streamplex = require('streamplex');
 
 var auth = require("./proxy-auth.js"),
-    PORT = +process.env.PORT || 5005,
+    PORT = +process.env.PORT || 0,
     CERT_FILE = process.env.CERT_FILE || "config/public-cert.pem",
     KEY_FILE = process.env.KEY_FILE || "config/private-key.pem",
     KEY_PASS = process.env.KEY_PASS;
