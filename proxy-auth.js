@@ -11,6 +11,7 @@ if (AUTH_TESSEL_OA2) {
       token_api = fermata.json(AUTH_TESSEL_OA2)('oauth', 'token'),
       profile_api = delete oa2_url.auth && fermata.json(url.format(oa2_url))('users', 'profile');
   module.exports = function (token, cb) {
+console.log("---> sending token: %j", token);
     token_api.post({'Content-Type':"application/x-www-form-urlencoded"}, {
       grant_type: "https://tessel-grant",
       api_key: token,
