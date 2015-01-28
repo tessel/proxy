@@ -58,6 +58,7 @@ Via <https://docs.nodejitsu.com/articles/cryptography/how-to-use-the-tls-module>
 
     openssl genrsa -out config/private-key.pem 1024
     openssl req -new -key config/private-key.pem -out config/csr.pem
+    #openssl req -new -key config/private-key.pem -config config/sample.cnf -out config/csr.pem
     openssl x509 -req -in config/csr.pem -signkey config/private-key.pem -out config/public-cert.pem   # self-sign
     rm config/csr.pem     # clean up intermediate file
 
