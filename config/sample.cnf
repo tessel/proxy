@@ -23,5 +23,6 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = localhost
+DNS.2 = 192.168.4.114.xip.io        # workaround https://github.com/tessel/runtime/issues/707
 IP.1 = 127.0.0.1
 IP.2 = 192.168.4.114
