@@ -5,7 +5,7 @@
   },
   "scripts": {
     "install": "touch config/env",
-    "start": "env $(<config/env xargs) supervisor proxy.js"
+    "start": "env $(<config/env xargs) supervisor proxy-clustered.js"
   },
   "devDependencies": {
     "supervisor": "^0.6.0"

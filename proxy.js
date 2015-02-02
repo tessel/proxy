@@ -9,6 +9,8 @@ var auth = require("./proxy-auth.js"),
     KEY_FILE = process.env.KEY_FILE || "config/private-key.pem",
     KEY_PASS = process.env.KEY_PASS;
 
+var srvId = 'proc:'+process.pid;
+
 tls.createServer({
   key: fs.readFileSync(KEY_FILE),
   passphrase: KEY_PASS,
@@ -16,62 +18,62 @@ tls.createServer({
 }, function (tunnelSocket) {
 //net.createServer(function (tunnelSocket) {
   var logId = 'tunnel:'+Math.random().toFixed(20).slice(2);   // just a greppable string
-  console.log(logId, "incoming tunnel from", tunnelSocket.remoteAddress);
+  console.log(srvId, logId, "incoming tunnel from", tunnelSocket.remoteAddress);
   
   var tunnel = streamplex(streamplex.A_SIDE),
       authed = false;
   tunnelSocket.pipe(tunnel).pipe(tunnelSocket);
   tunnelSocket.on('error', function (e) {
-    console.warn(logId, "tunnel network error", e.stack);
+    console.warn(srvId, logId, "tunnel network error", e.stack);
     tunnel.destroy(e);
   });
   tunnelSocket.on('close', function () {
-    console.log(logId, "tunnel closed");
+    console.log(srvId, logId, "tunnel closed");
   });
   tunnel.on('error', function (e) {
-    console.warn(logId, "tunnel parsing error", e.stack);
+    console.warn(srvId, logId, "tunnel parsing error", e.stack);
     tunnel.destroy(e);
   });
   tunnel.on('message', function (d) {
     auth(d.token, function (e, userId) {
-      if (e) console.error(logId, "auth system error", e.stack);
+      if (e) console.error(srvId, logId, "auth system error", e.stack);
       else if (userId) authed = true;
       tunnel.sendMessage({authed:authed});
-      if (authed) console.log(logId, "authenticated as:", userId);
-      else if (!e) console.warn(logId, "auth failed!");
+      if (authed) console.log(srvId, logId, "authenticated as:", userId);
+      else if (!e) console.warn(srvId, logId, "auth failed!");
     });
   });
   tunnel.on('stream', function (stream, type) {
     if (!authed) {
-      console.warn(logId, "unauthorized stream request!");
+      console.warn(srvId, logId, "unauthorized stream request!");
       tunnel.sendMessage({error:"Not authorized!"});
       return tunnelSocket.destroy();
     }
     var logSubId = 'stream:'+Math.random().toFixed(5).slice(2);
-    console.info(logId, logSubId, "creating socket");
+    console.info(srvId, logId, logSubId, "creating socket");
     
     var socket = new net.Socket();
     stream.on('_pls_connect', function (port, host) {
-      console.log(logId, logSubId, "connection request:", host, port, type);
+      console.log(srvId, logId, logSubId, "connection request:", host, port, type);
       // TODO: how to prevent unwanted (i.e. LAN/loopback) outbound?
       socket.connect(port, host, function () {
-        console.info(logId, logSubId, "connection success");
+        console.info(srvId, logId, logSubId, "connection success");
         stream.remoteEmit('connect');
         if (type === 'tls') tls.connect({socket:socket, host:host, port:port}, function () {
             var secureSocket = this;
-            console.info(logId, logSubId, "tls negotiated");
+            console.info(srvId, logId, logSubId, "tls negotiated");
             stream.remoteEmit('secureConnect');
             stream.pipe(secureSocket).pipe(stream);
         }); else stream.pipe(socket).pipe(stream);
       }).on('error', function (e) {
-        console.warn(logId, logSubId, "socket error", e.stack);
+        console.warn(srvId, logId, logSubId, "socket error", e.stack);
         stream.emit('error', e);
         stream.destroy();
       }).on('close', function (e) {
-        console.log(logId, logSubId, "socket closed");
+        console.log(srvId, logId, logSubId, "socket closed");
         stream.remoteEmit('close');
       }).on('lookup', function () {
-        console.info(logId, logSubId, "dns lookup");
+        console.info(srvId, logId, logSubId, "dns lookup");
         stream.remoteEmit('lookup');
       });
     });
@@ -79,10 +81,10 @@ tls.createServer({
       socket.setTimeout(msecs);
     });
     socket.on('timeout', function () {
-      console.info(logId, logSubId, "timeout");
+      console.info(srvId, logId, logSubId, "timeout");
       stream.remoteEmit('timeout');
     });
   });
 }).listen(PORT, function(){
-  console.log("proxy server listening on port", this.address().port);
+  console.log(srvId, "proxy server listening on port", this.address().port);
 });
