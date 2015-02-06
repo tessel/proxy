@@ -29,6 +29,7 @@ tls.createServer({
   });
   tunnelSocket.on('close', function () {
     console.log(srvId, logId, "tunnel closed");
+    tunnel.destroy();
   });
   tunnel.on('error', function (e) {
     console.warn(srvId, logId, "tunnel parsing error", e.stack);
