@@ -39,7 +39,7 @@ The proxy is a TLS socket server, configured via the following environment varia
 
 The proxy requires a valid authentication token before it will open outgoing connections on a client's behalf. Two options for token validation are provided "out of the box":
 
-* `AUTH_TESSEL_OA2` — Delegate to an instance of a [Tessel OAuth server](https://github.com/tessel/oauth). Setting this will disable `AUTH_HARDCODED` below. Provide a URL of the form `"https://client_id:client_secret@oauth_server.example.com"`. Defaults to unused.
+* `AUTH_TESSEL_OA2` — Delegate to an instance of a [Tessel OAuth server](https://github.com/tessel/oauth). Setting this will disable `AUTH_HARDCODED` below. Provide a URL of the form `"https://client_api_key@oauth_server.example.com"`. Defaults to unused.
 * `AUTH_HARDCODED` — Shared password. Whatever value you provide will be used by all clients to login. Defaults to `'DEV-CRED'`.
 
 If neither of these suits your needs, you can replace `./proxy-auth.js` with your own custom validator:
