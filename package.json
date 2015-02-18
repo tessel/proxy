@@ -4,7 +4,7 @@
     "streamplex": "^0.13.1"
   },
   "scripts": {
-    "install": "touch config/env",
+    "install": "cp -n config/env.sample config/env 2>/dev/null || true",
     "start": "env $(<config/env xargs) supervisor proxy-clustered.js"
   },
   "devDependencies": {
