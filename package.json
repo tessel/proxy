@@ -4,8 +4,8 @@
     "streamplex": "^0.13.1"
   },
   "scripts": {
-    "install": "cp -n config/env.sample config/env 2>/dev/null || true",
-    "start": "env $(<config/env xargs) supervisor proxy-clustered.js"
+    "install": "cp -n config/env.sample .env 2>/dev/null || true",
+    "start": "env $(<.env xargs) supervisor proxy-clustered.js"
   },
   "devDependencies": {
     "supervisor": "^0.6.0"
